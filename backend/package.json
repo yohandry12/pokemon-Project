@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "node-project",
+  "version": "1.0.0",
+  "description": "prise en main de nodejs pour la création d'une API",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"nodemon app.js\" \"npm start --prefix frontend\""
+  },
+  "author": "Yohandry",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
+    "sequelize": "^6.37.7",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.10"
+  }
+}
