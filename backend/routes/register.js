@@ -1,4 +1,4 @@
-const { User } = require("../src/db/sequelize");
+const User = require("../src/models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const privateKey = require("../src/auth/private_key");
@@ -6,16 +6,16 @@ const privateKey = require("../src/auth/private_key");
 module.exports = (app) => {
   app.post("/api/register", async (req, res) => {
     try {
-      const { email, password, firstname, lastname } = req.body;
+      const { firstName, lastName, email, username, password} = req.body;
 
       // Validation des champs
-      if (!email || !password || !firstname || !lastname) {
+      if (!email || !password || !firstName || !lastName || !username) {
         return res
           .status(400)
           .json({ message: "Tous les champs sont obligatoires." });
       }
 
-      const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ message: "Cet email est déjà utilisé." });
       }
@@ -24,8 +24,9 @@ module.exports = (app) => {
       const user = await User.create({
         email,
         password: hashedPassword,
-        firstname: firstname,
-        lastname: lastname,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
       });
 
       // Création du token JWT

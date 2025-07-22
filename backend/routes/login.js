@@ -1,11 +1,39 @@
-const { User } = require("../src/db/sequelize");
+const User = require("../src/models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const privateKey = require("../src/auth/private_key");
 
+// Identifiants admin depuis les variables d'environnement
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@test.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+const ADMIN_FIRST_NAME = process.env.ADMIN_FIRST_NAME || "Admin";
+const ADMIN_LAST_NAME = process.env.ADMIN_LAST_NAME || "User";
+
 module.exports = (app) => {
   app.post("/api/login", (req, res) => {
-    User.findOne({ where: { email: req.body.email } })
+    const { email, password } = req.body;
+
+    // Cas admin
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      const adminUser = {
+        id: "admin-id",
+        email: ADMIN_EMAIL,
+        firstName: ADMIN_FIRST_NAME,
+        lastName: ADMIN_LAST_NAME,
+        isAdmin: true,
+      };
+      const token = jwt.sign(
+        { userId: adminUser.id, isAdmin: true },
+        privateKey,
+        {
+          expiresIn: "78h",
+        }
+      );
+      const message = `L'administrateur a été connecté avec succès`;
+      return res.json({ message, data: adminUser, token });
+    }
+    // Cas utilisateur classique
+    User.findOne({ email: req.body.email })
       .then((user) => {
         if (!user) {
           const message = `L'utilisateur demandé n'existe pas.`;
@@ -21,7 +49,7 @@ module.exports = (app) => {
             }
 
             const token = jwt.sign({ userId: user.id }, privateKey, {
-              expiresIn: "24h",
+              expiresIn: "48h",
             });
 
             const message = `L'utilisateur a été connecté avec succès`;
