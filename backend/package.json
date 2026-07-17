@@ -3,11 +3,13 @@
   "name": "node-project",
   "version": "1.0.0",
   "description": "prise en main d'une API pour la création d'un site de streaming",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon server.js",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"nodemon app.js\" \"npm start --prefix frontend\""
+    "dev": "concurrently \"nodemon server.js\" \"npm start --prefix frontend\"",
+    "seed:admin": "node src/seeds/seedAdmin.js",
+    "seed:plans": "node src/seeds/seedSubscriptionPlans.js"
   },
   "author": "Yohandry",
   "license": "ISC",
@@ -16,6 +18,7 @@
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
