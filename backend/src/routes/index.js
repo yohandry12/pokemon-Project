@@ -13,6 +13,7 @@ router.use(require("./recommendation.routes"));
 router.use(require("./subscription.routes"));
 router.use(require("./payment.routes"));
 router.use(require("./contact.routes"));
+router.use(require("./chat.routes"));
 
 // Routes admin
 router.use(require("./admin"));
