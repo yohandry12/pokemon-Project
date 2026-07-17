@@ -14,6 +14,7 @@ module.exports = {
   corsOrigin: process.env.CORS_ORIGIN,
   jwtSecret: process.env.JWT_SECRET || "CUSTOM_PRIVATE_KEY",
   deepseekApiKey: process.env.DEEPSEEK_API_KEY,
+  tmdbApiKey: process.env.TMDB_API_KEY,
   admin: {
     email: process.env.ADMIN_EMAIL || "admin@test.com",
     password: process.env.ADMIN_PASSWORD || "admin",

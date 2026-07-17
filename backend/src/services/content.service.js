@@ -115,9 +115,28 @@ const create = async (data) => {
   return content;
 };
 
+// Accepte des ObjectId (24 hex) ou des slugs, retourne des ObjectId.
+const resolveGenres = async (genres) => {
+  const list = Array.isArray(genres) ? genres : [genres];
+  const ids = list.filter((g) => /^[0-9a-fA-F]{24}$/.test(String(g)));
+  const slugs = list.filter((g) => !/^[0-9a-fA-F]{24}$/.test(String(g)));
+  if (slugs.length === 0) return ids;
+  const genresDocs = await Genre.find({ slug: { $in: slugs } });
+  if (genresDocs.length !== slugs.length) {
+    throw new ApiError(400, "Un ou plusieurs genres sont invalides.");
+  }
+  return [...ids, ...genresDocs.map((g) => g._id)];
+};
+
 const update = async (contentId, body) => {
   const castData = Array.isArray(body.cast) ? body.cast : [];
   const { cast, ...otherUpdateFields } = body;
+
+  // Le frontend envoie les genres en slugs : conversion en ObjectId
+  // (create le faisait déjà, update non — cause de CastError)
+  if (otherUpdateFields.genres) {
+    otherUpdateFields.genres = await resolveGenres(otherUpdateFields.genres);
+  }
 
   // Trouver/créer les acteurs du cast (upsert)
   const newCastForDB = await Promise.all(
